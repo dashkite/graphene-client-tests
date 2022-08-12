@@ -1,0 +1,11 @@
+origin: https://graphene.dashkite.io
+identity: ${ email }
+expires: 
+  days: 30
+resolvers:
+  collection:
+    binding: collection
+grants:
+  - resources:
+      - db create
+    methods: [ post ]
