@@ -1,7 +1,7 @@
 {
-  "name": "@dashkite/graphene-lambda-client",
+  "name": "@dashkite/graphene-client-tests",
   "version": "0.0.0",
-  "description": "Graphene Lambda Client",
+  "description": "Graphene Client Tests",
   "exports": {
     ".": {
       "node": "./build/node/src/index.js"
@@ -23,19 +23,13 @@
     "@dashkite/amen-console": "file:../amen-console",
     "@dashkite/assert": "^0.1.4",
     "@dashkite/genie": "^0.5.6",
-    "@dashkite/genie-presets": "file:../genie-presets",
-    "@dashkite/polaris": "file:../polaris",
-    "@dashkite/runes": "file:../runes",
-    "fake-indexeddb": "^4.0.0"
+    "@dashkite/genie-presets": "file:../genie-presets"
   },
   "dependencies": {
     "@dashkite/bake": "^0.0.6",
     "@dashkite/dolores": "file:../dolores",
     "@dashkite/graphene-client": "file:../graphene-client",
-    "@dashkite/graphite-core": "file:../graphite-core",
     "@dashkite/joy": "^0.3.16",
-    "@dashkite/vega-client": "file:../vega-client",
-    "node-fetch": "^2.6.7",
     "source-map-support": "^0.5.21"
   }
 }
