@@ -1,24 +1,47 @@
-import "source-map-support/register"
 import { test as _test, success } from "@dashkite/amen"
 import { print, debug } from "@dashkite/amen-console"
 import assert from "@dashkite/assert"
 
 import * as Time from "@dashkite/joy/time"
 
+Env = 
+  array: ( name ) -> ( process.env[ name ]?.split /\s/ ) ? []
+  text: ( name ) -> process.env[ name ] ? ""
+
 test = ( description, options, f ) ->
+  if "genie" in Env.array "DEBUG"
+    console.log description
   if f?
     _test { description, options...}, f
   else
     # 2nd argument is f
     _test description, options
 
-run = do ({ db, collection, response, content } = {}) ->
+wait = ({ interval, predicate, action }) ->
+  interval ?= 5
+  loop
+    break if predicate await action() 
+    await Time.sleep interval * 1000
+
+target = ( name, f ) ->
+  f() if ( name in Env.array "targets" )
+
+run = do ({ 
+  db
+  collection
+  index
+  key
+  sort
+  response
+  content 
+} = {}) ->
 
   ( client, hooks = {}) ->
 
     print await test "Graphene", [
 
       await test "Database", await do ->
+
         [
 
           await test "Create", wait: false, ->
@@ -54,8 +77,6 @@ run = do ({ db, collection, response, content } = {}) ->
             assert db.updated > db.created
             assert.equal db.name, "My Updated Database"
 
-          test "Delete"
-
         ]
 
       await test "Collection", await do ->
@@ -75,8 +96,6 @@ run = do ({ db, collection, response, content } = {}) ->
 
           await test "Status (not ready)", wait: false, ->
           
-            await Time.sleep 2000
-
             response = await collection.getStatus()
 
             # console.log "get status", response
@@ -86,9 +105,11 @@ run = do ({ db, collection, response, content } = {}) ->
 
           await test "Status (ready)", wait: false, ->
 
-            while response.status != "ready"
-              await Time.sleep 1000
-              response = await collection.getStatus()
+            wait
+              predicate: ( response ) -> 
+                # console.log "status ready", response
+                response.status == "ready"
+              action: -> collection.getStatus()
 
           await test "Get", wait: false, ->
 
@@ -109,8 +130,6 @@ run = do ({ db, collection, response, content } = {}) ->
             assert collection.updated > collection.created
             assert.equal collection.name, "Favorite Shows And Films"
 
-          test "Delete"
-          
           await test "List", ->
             content = await db.collections.list()
             # console.log "list collections", content
@@ -122,21 +141,73 @@ run = do ({ db, collection, response, content } = {}) ->
             assert.equal content[0].name, "Favorite Shows And Films"
         ]
 
+      await test "Indexing", await target "indexing", ->
+        
+        key = "title"
+        sort = "year"
+
+        [
+
+          await test "Create", wait: false, ->
+
+            index = await collection.indices.create { key, sort }
+
+            assert.equal key, index.key
+            assert.equal sort, index.sort
+            assert.equal "not ready", index.status
+
+            # console.log "create index", response      
+
+          await test "Get", wait: false, ->
+            index = await collection.indices.get { key, sort }
+
+            # console.log "get index", index      
+
+            assert.equal key, index.key
+            assert.equal sort, index.sort
+
+          await test "Status (ready)", wait: false, ->
+
+            wait
+              interval: 30
+              predicate: ( index ) -> 
+                # console.log "status ready", index
+                index.status == "ready"
+              action: ->
+                collection.indices.get { key, sort }
+
+          await test "List", wait: false, ->
+
+            indices = await collection.indices.list()
+
+            # console.log "list indices", indices      
+
+            assert.equal 1, indices.length 
+            assert.equal "ready", indices[0].status
+            assert.equal key, indices[0].key
+            assert.equal sort, indices[0].sort
+
+        ]
+
+      await test "Metadata", await do ->
+
+        [
+
+          await test "Empty List", ->
+            list = await collection.metadata.list()
+            content = list.entries
+
+            # console.log "list entries (with metadata)", entries
+            assert content.length?
+            assert.equal 0, content.length
+
+        ]
+
       await test "Entry", await do ->
 
         entry = "star-wars"
 
         [
-
-          await test "Empty List (with metadata)", wait: false, ->
-
-            list = await collection.metadata.list()
-
-            content = list.entries
-          
-            # console.log "list entries", content
-            assert content.length?
-            assert.equal 0, content.length
 
           await test "Create", wait: false, ->
 
@@ -144,7 +215,7 @@ run = do ({ db, collection, response, content } = {}) ->
               title: "Star Wars"
               year: "1977"
 
-            # console.log "create entry", content
+            # console.log "create entry", entry
             assert content.title?
             assert.equal content.title, "Star Wars"
             assert content.year?
@@ -156,7 +227,7 @@ run = do ({ db, collection, response, content } = {}) ->
 
             content = await collection.entries.get "star-wars"
 
-            # console.log "get entry", content
+            # console.log "get entry", entry
             assert content.title?
             assert.equal content.title, "Star Wars"
             assert content.year?
@@ -175,6 +246,16 @@ run = do ({ db, collection, response, content } = {}) ->
             assert content.director?
             assert.equal content.director, "George Lucas"
 
+          await test "Increment", ->
+            # { views } = await collection.entries.increment "star-wars", "views"
+            views = await collection.entries.increment "star-wars", "views"
+            # console.log "increment", content
+            assert.equal 1, views
+
+          await test "Decrement", ->
+            views = await collection.entries.decrement "star-wars", "views"
+            assert.equal 0, views
+        
           await test "List", wait: false, ->
 
             content = await collection.entries.list()
@@ -184,23 +265,6 @@ run = do ({ db, collection, response, content } = {}) ->
             assert.equal 1, content.length
             assert.equal "Star Wars", content[0].title
 
-          await test "List (with metadata)", wait: false, ->
-
-            list = await collection.metadata.list()
-
-            content = list.entries
-          
-            # console.log "list entries", content
-            assert content.length?
-            assert.equal 1, content.length
-            assert.equal "Star Wars", content[0].content.title
-            # console.log content[0].key
-            assert.equal "star-wars", content[0].key
-
-          test "Increment"
-
-          test "Decrement"
-          
           await test "Query", wait: false, ->
 
             await Time.sleep 2000
@@ -210,13 +274,136 @@ run = do ({ db, collection, response, content } = {}) ->
             # console.log "query entry", content
             assert.equal content.director, "George Lucas"
 
-          test "Query All"
+          await test "Query All", wait: false, ->
+            content = await collection.entries.queryAll title: "Star Wars"
+            # console.log "query all entry", content
+            assert content.length?
+            assert.equal 1, content.length
+            assert.equal "Star Wars", content[ 0 ].title
 
+        ]
+
+      await test "Metadata", await do ->
+
+        [
+
+          await test "Get", wait: false, ->
+
+            content = await collection.metadata.get "star-wars"
+
+            # console.log "get metadata", content
+            assert.equal "star-wars", content.entry
+            assert content.content?
+            data = content.content
+            assert data.title?
+            assert.equal data.title, "Star Wars"
+            assert data.year?
+            assert.equal data.year, "1977"
+
+          await test "List", wait: false, ->
+
+            list = await collection.metadata.list()
+
+            # console.log "list entries", content
+
+            content = list.entries
+          
+            assert content.length?
+            assert.equal 1, content.length
+            assert.equal "Star Wars", content[0].content.title
+            # console.log content[0].key
+            assert.equal "star-wars", content[0].key
+
+        await test "Query", wait: false, ->
+
+          content = await collection.metadata.query title: "Star Wars"
+
+          # console.log "query metadata", content
+          assert content?.content?
+          data = content.content
+          assert.equal data.director, "George Lucas"
+
+        await test "Query All", wait: false, ->
+          list = await collection.metadata.queryAll title: "Star Wars"
+          content = list.entries
+
+          # console.log "query all metadata", content
+          assert content?.length?
+          assert.equal 1, content.length
+          assert.equal "Star Wars", content[ 0 ].content.title
+
+        ]
+
+      await test "Entry", await do ->
+
+        [
           await test "Delete", wait: false, ->
             collection.entries.delete "star-wars"
 
+        await test "Get (After Delete)", wait: false, ->
+          wait
+            predicate: ( response ) ->
+              # console.log "get entry after delete", content
+              !content?
+            action: ->
+              content = await collection.entries.get "star-wars"
 
         ]
+
+      await test "Indexing", await target "indexing", ->
+    
+        [
+          
+          await test "Delete", wait: false, ->
+            collection.indices.delete { key, sort }
+
+          await test "Status (deleted)", wait: false, ->
+            wait
+              predicate: ( response ) -> 
+                # console.log "index status after delete", index
+                !index?
+              action: ->
+                index = await collection.indices.get { key, sort }
+
+          await test "List", wait: false, ->
+            indices = await collection.indices.list()
+
+            # console.log "list indices after delete", indices
+
+            assert.equal 0, indices.length 
+
+        ]
+
+      await test "Collection", [
+
+        await test "Delete", wait: false, ->
+          collection.delete()
+
+        await test "Get (After Delete)", wait: false, ->
+
+          wait
+            predicate: ( response ) -> 
+              # console.log "collection get after delete", collection
+              !collection?
+            action: ->
+              collection = await db.collections.get collection.byname
+      ]
+
+      await test "DB", [
+
+        await test "Delete", wait: false, ->
+          db.delete()
+
+        await test "Get (After Delete)", wait: false, ->
+
+          wait
+            predicate: ( response ) ->
+              # console.log "db get after delete", db
+              !db?
+            action: ->
+              db = await client.db.get db.address
+
+      ]
 
     ]
 
