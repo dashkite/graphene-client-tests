@@ -20,8 +20,7 @@
   },
   "homepage": "https://github.com/dashkite/graphene-lambda-client#readme",
   "devDependencies": {
-    "@dashkite/genie": "link:../genie",
-    "@dashkite/genie-presets": "link:../genie-presets"
+    "@dashkite/genie": "link:../genie"
   },
   "dependencies": {
     "@dashkite/amen": "^0.1.2",
