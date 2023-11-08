@@ -1,46 +1,37 @@
-lockfileVersion: '6.0'
+lockfileVersion: 5.4
 
-settings:
-  autoInstallPeers: true
-  excludeLinksFromLockfile: false
+specifiers:
+  '@dashkite/amen': ^0.1.2
+  '@dashkite/amen-console': link:../amen-console
+  '@dashkite/assert': ^0.1.4
+  '@dashkite/genie': link:../genie
+  '@dashkite/genie-coffee': link:../genie-coffee
+  '@dashkite/genie-yaml': link:../genie-yaml
+  '@dashkite/joy': ^0.3.16
 
 dependencies:
-  '@dashkite/amen':
-    specifier: ^0.1.2
-    version: 0.1.2
-  '@dashkite/amen-console':
-    specifier: link:../amen-console
-    version: link:../amen-console
-  '@dashkite/assert':
-    specifier: ^0.1.4
-    version: 0.1.4
-  '@dashkite/joy':
-    specifier: ^0.3.16
-    version: 0.3.16
+  '@dashkite/amen': 0.1.2
+  '@dashkite/amen-console': link:../amen-console
+  '@dashkite/assert': 0.1.4
+  '@dashkite/joy': 0.3.16
 
 devDependencies:
-  '@dashkite/genie':
-    specifier: link:../genie
-    version: link:../genie
-  '@dashkite/genie-coffee':
-    specifier: link:../genie-coffee
-    version: link:../genie-coffee
-  '@dashkite/genie-yaml':
-    specifier: link:../genie-yaml
-    version: link:../genie-yaml
+  '@dashkite/genie': link:../genie
+  '@dashkite/genie-coffee': link:../genie-coffee
+  '@dashkite/genie-yaml': link:../genie-yaml
 
 packages:
 
-  /@dashkite/amen@0.1.2:
+  /@dashkite/amen/0.1.2:
     resolution: {integrity: sha512-lQwxCo97oKnNrH+mNcF/fTi1WFY+YfOHBD31NDkvcu/R6HOtLQa08agyZBRk5kJrOjHYI8kAdOkjjOWw8LEC5g==}
     dev: false
 
-  /@dashkite/assert@0.1.4:
+  /@dashkite/assert/0.1.4:
     resolution: {integrity: sha512-OLOzI/lA+EwCh6znSexGAG1V4bkaT5gU04xl6ApEluv5jICnHhinZ707MObu+jhVVJ9uHDDlG85O+Afn1aTQoQ==}
     dependencies:
       '@dashkite/joy': 0.3.16
     dev: false
 
-  /@dashkite/joy@0.3.16:
+  /@dashkite/joy/0.3.16:
     resolution: {integrity: sha512-dsU0us4j1Pb+zceoBvLbnZ2PbmULkJUtM2vtWLxKmoc1DE4w9SVTiPTe6JWvF0A0vk90ldv+Lc9qEA5x3O+DtQ==}
     dev: false
