@@ -29,7 +29,7 @@
   },
   "dependencies": {
     "@dashkite/amen": "^0.1.2",
-    "@dashkite/amen-console": "link:../amen-console",
+    "@dashkite/amen-console": "0.1.0",
     "@dashkite/assert": "^0.1.4",
     "@dashkite/joy": "^0.3.16"
   }

@@ -12,8 +12,8 @@ importers:
         specifier: ^0.1.2
         version: 0.1.2
       '@dashkite/amen-console':
-        specifier: link:../amen-console
-        version: link:../amen-console
+        specifier: 0.1.0
+        version: 0.1.0
       '@dashkite/assert':
         specifier: ^0.1.4
         version: 0.1.4
@@ -585,6 +585,9 @@ packages:
   '@babel/types@7.28.0':
     resolution: {integrity: sha512-jYnje+JyZG5YThjHiF28oT4SIZLnYOcSBb6+SDaFIyzDVSkXQmQQYclJ2R+YxcdmK0AX6x1E5OQNtuh3jHDrUg==}
     engines: {node: '>=6.9.0'}
+
+  '@dashkite/amen-console@0.1.0':
+    resolution: {integrity: sha512-S9BSRIUwtFKfFaUqddpodNtsuXpGEGdOBqZIP0S70HAO9AAtvbkM+4PGJEJ5BvXu04/pJpmBdzJs6nYaQ1mphQ==}
 
   '@dashkite/amen@0.1.2':
     resolution: {integrity: sha512-lQwxCo97oKnNrH+mNcF/fTi1WFY+YfOHBD31NDkvcu/R6HOtLQa08agyZBRk5kJrOjHYI8kAdOkjjOWw8LEC5g==}
@@ -2103,6 +2106,8 @@ snapshots:
     dependencies:
       '@babel/helper-string-parser': 7.27.1
       '@babel/helper-validator-identifier': 7.27.1
+
+  '@dashkite/amen-console@0.1.0': {}
 
   '@dashkite/amen@0.1.2': {}
 
