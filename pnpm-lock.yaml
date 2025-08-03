@@ -22,8 +22,8 @@ importers:
         version: 0.7.0
     devDependencies:
       '@dashkite/genie':
-        specifier: ^0.20.7
-        version: 0.20.7
+        specifier: ^0.20.8
+        version: 0.20.8
       '@dashkite/genie-clean':
         specifier: ^0.9.0
         version: 0.9.0
@@ -607,8 +607,8 @@ packages:
   '@dashkite/genie-yaml@0.7.0':
     resolution: {integrity: sha512-XpliyPq/hF9BXMxBbD2wKCsNEI4ViLIzfRam2dS7lsoX4LR2fM5xPrZ/0RFdh3Tar1pugnEdbSZTDGfn3LPDwA==}
 
-  '@dashkite/genie@0.20.7':
-    resolution: {integrity: sha512-jbLlY1/1A0UWx1r0z5RJEJIkIkcOvd3CAh1AmKFeZC2ydS0L3p2r388K6X1PrRlJkOa+pJkiupD426HaJXFShg==}
+  '@dashkite/genie@0.20.8':
+    resolution: {integrity: sha512-zpKtzW1hIjAOQvCr+92FlKhbHZTqLYyiumLAl8R+tX4BkmBcarhEccaGBsq0it023afAYzChLrg6r4Cduunanw==}
     engines: {node: '>=20.0.0'}
     hasBin: true
 
@@ -2169,7 +2169,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@dashkite/genie@0.20.7':
+  '@dashkite/genie@0.20.8':
     dependencies:
       '@dashkite/joy': 0.7.0
       '@dashkite/kaiko': 0.3.3
