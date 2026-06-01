@@ -1,6 +1,6 @@
 {
   "name": "@dashkite/graphene-client-tests",
-  "version": "0.11.18",
+  "version": "0.11.19",
   "description": "Graphene Client Tests",
   "exports": {
     ".": {
